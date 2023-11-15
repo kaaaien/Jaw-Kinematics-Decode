@@ -1,0 +1,8 @@
+Chew Types
+1: Chew
+2: Swallow
+3: Other
+
+Chew Side
+1: left
+2: Right

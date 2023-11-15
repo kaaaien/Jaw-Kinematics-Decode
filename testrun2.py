@@ -31,13 +31,13 @@ def run():
     lowcut = 15.0
     highcut = 35.0
     # Filter a noisy signal.
-    T = 120
+    T = 60  
     nsamples = int(T * fs)
     
     t = np.linspace(0, T, nsamples, endpoint=False)
     x = mat73.loadmat('../Neuro/e196/Neural data/MILFP.mat', use_attrdict=True)
     loaded = x['MILFP']
-    data = loaded['Data'][32][0:120000] #5-10 mins of data. Choose 5 mins from start
+    data = loaded['Data'][0][0:60000] #5-10 mins of data. Choose 5 mins from start
     plt.figure(2)
     plt.clf()
     plt.plot(t, data, label='Noisy signal')
