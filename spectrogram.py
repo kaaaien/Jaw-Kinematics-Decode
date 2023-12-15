@@ -3,12 +3,6 @@ from scipy.io import wavfile, whosmat, loadmat
 import mat73
 import ghostipy
 
-#TODO: compute power spectrum - plot power spectrum for all channels
-# are there any bad channels?
-#TODO: Compute power spectrum from 0 - 200Hz and look for peaks
-#TODO: Play with selection of data channels and data length time frame
-
-
 def run():
     import numpy as np
     import matplotlib.pyplot as plt
@@ -21,7 +15,7 @@ def run():
     
     x = loadmat('../Neuro/e196/kin\ analysis/ChewCerebus.mat')
     loaded = x['e196t03']
-    data = loaded[:,1] #15 mins of data. Choose 5 mins from start
+    data = loaded[:,1]
     plt.figure(1)
     plt.clf()
     psd, freqs = ghostipy.mtm_spectrogram(data, )

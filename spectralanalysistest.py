@@ -18,14 +18,15 @@ def run():
     fs = 1000.0
     # Filter a noisy signal.
     T = 120
-    x = mat73.loadmat('../../../scratch/midway3/kaienh/MILFP.mat', use_attrdict=True)
+    x = mat73.loadmat('MILFP.mat', use_attrdict=True)
     loaded = x['MILFP']
-    data = loaded['Data'][40][0:120000] #15 mins of data. Choose 5 mins from start
+    data_prelog = loaded['Data'][40][0:120000] #15 mins of data. Choose 5 mins from start
+    data = np.log10(data_prelog) * 20
     plt.figure(1)
     plt.clf()
-    psd, freqs = ghostipy.mtm_spectrum(data, 25, fs=fs) # use 25 ish for bandwidth 
-    psd_log = np.log10(psd) * 20
-    plt.plot(freqs, psd_log)
+    psd, freqs = ghostipy.mtm_spectrum(data_prelog, 15, fs=fs) # use 25 ish for bandwidth 
+
+    plt.plot(freqs, psd)
     # plt.psd(data, Fs=fs)
     plt.grid(True)
     plt.axis('tight')
