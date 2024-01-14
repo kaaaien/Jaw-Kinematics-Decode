@@ -23,15 +23,16 @@ def run():
     quality_factor = 20.0  # Quality factor 
     x = mat73.loadmat('../../../scratch/midway3/kaienh/MILFP.mat', use_attrdict=True)
     loaded = x['MILFP']
-    data = loaded['Data'][30][0:120000] #2 mins of data. Choose 5 mins from start
+    data = loaded['Data'][40][0:120000] #2 mins of data. Choose 5 mins from start
     plt.figure(1)
     plt.clf()
-    psd, freqs = ghostipy.mtm_spectrum(data, 15, fs=fs) # use 25 ish for bandwidth
+    # psd, freqs = ghostipy.mtm_spectrum(data, 15, fs=fs) # use 25 ish for bandwidth
+    psd, freqs = plt.psd(data, Fs=fs)
     psd_log = np.log10(psd) * 20
     b_notch, a_notch = signal.iirnotch(notch_freq, quality_factor, fs)  
     notched = signal.filtfilt(b_notch, a_notch, psd_log)
     plt.plot(freqs, notched)
-    # plt.psd(data, Fs=fs)
+
     plt.grid(True)
     plt.axis('tight')
     plt.legend(loc='upper left')
