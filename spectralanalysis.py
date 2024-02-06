@@ -10,7 +10,7 @@ import ghostipy
 #TODO: IMPORTANT - move MILFP.mat to scratch and use it from there
 
 def run():
-    print("test")
+    print("new")
     import numpy as np
     import matplotlib.pyplot as plt
     from scipy.signal import freqz
@@ -18,19 +18,23 @@ def run():
     # Sample rate and desired cutoff frequencies (in Hz).
     fs = 1000.0
     # Filter a noisy signal.
-    T = 120
-    notch_freq = 120.0  # Frequency to be removed from signal (Hz)
-    quality_factor = 20.0  # Quality factor 
+    T = 30
+    notch_freq = 60.0
+    quality_factor = 60.0
+    harmonics = [notch_freq * i for i in range(2, 6)]  # First 5 harmonics of 60 Hz
     x = mat73.loadmat('../../../scratch/midway3/kaienh/MILFP.mat', use_attrdict=True)
     loaded = x['MILFP']
-    data = loaded['Data'][30][0:120000] #2 mins of data. Choose 5 mins from start
-    plt.figure(1)
+    data = loaded['Data'][30][0:30000] #2 mins of data. Choose 5 mins from start
+    plt.figure(figsize=(10, 6))
     plt.clf()
-    psd, freqs = ghostipy.mtm_spectrum(data, 15, fs=fs) # use 25 ish for bandwidth
-    psd_log = np.log10(psd) * 20
-    b_notch, a_notch = signal.iirnotch(notch_freq, quality_factor, fs)  
-    notched = signal.filtfilt(b_notch, a_notch, psd_log)
-    plt.plot(freqs, notched)
+    filterloop = data
+    for harmonic_freq in harmonics:
+        b_notch, a_notch = signal.iirnotch(harmonic_freq, quality_factor * harmonic_freq/60, fs)
+        curr = signal.lfilter(b_notch, a_notch, filterloop)
+        filterloop = curr
+    psd, freqs = ghostipy.mtm_spectrum(filterloop, 15, fs=fs)
+    filtered = 20 * np.log10(psd)
+    plt.plot(freqs, filtered, linestyle='solid', color='blue', label='Multitaper PSD')
     # plt.psd(data, Fs=fs)
     plt.grid(True)
     plt.axis('tight')
